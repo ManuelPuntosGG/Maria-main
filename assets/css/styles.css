@@ -140,9 +140,11 @@ body {
 .letter_content {
 	height: calc(var(--vh, 1vh) * 100);
 	width: 100%;
-	position: -webkit-sticky;
+	position: -webkit-sticky; /* Necesario para Safari */
 	position: sticky;
-	top: calc(var(--vh, 1vh) * 70);
+	top: 0; /* Ajustado para que pegue al tope en Safari móvil */
+	-webkit-backface-visibility: hidden;
+	backface-visibility: hidden;
 }
 
 .div_svg {
@@ -178,49 +180,48 @@ body {
 }
 
 .mask_mavi {
-	fill: none;
-	stroke: #fff;
-	stroke-width: 40;
-	stroke-linejoin: round;
-	stroke-linecap: round;
+    fill: none;
+    stroke: #fff;
+    stroke-width: 40;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+    /* Forzar aceleración de hardware */
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
 }
 
 .write1 {
-	stroke-dasharray: 6000;
-	stroke-dashoffset: 6000;
-	-webkit-transform: translateZ(0); /* Fuerza uso de GPU */
-	transform: translateZ(0);
-
-	-webkit-animation-name: animate-mavi;
-	-webkit-animation-duration: 3.5s;
-	-webkit-animation-delay: calc(9.3s - var(--time-chrome));
-	-webkit-animation-timing-function: ease-in;
-	-webkit-animation-fill-mode: forwards;
-
-	animation-name: animate-mavi;
-	animation-duration: 3.5s;
-	animation-delay: calc(9.3s - var(--time-chrome));
-	animation-timing-function: ease-in;
-	animation-fill-mode: forwards;
+    stroke-dasharray: 6000;
+    stroke-dashoffset: 6000;
+    
+    /* Desglose para Safari */
+    -webkit-animation-name: animate-mavi;
+    -webkit-animation-duration: 3.5s;
+    -webkit-animation-delay: calc(9.3s - var(--time-chrome));
+    -webkit-animation-timing-function: ease-in;
+    -webkit-animation-fill-mode: forwards;
+    
+    animation-name: animate-mavi;
+    animation-duration: 3.5s;
+    animation-delay: calc(9.3s - var(--time-chrome));
+    animation-timing-function: ease-in;
+    animation-fill-mode: forwards;
 }
-
 .write2 {
-	stroke-dasharray: 6000;
-	stroke-dashoffset: 6000;
-	-webkit-transform: translateZ(0);
-	transform: translateZ(0);
+    stroke-dasharray: 6000;
+    stroke-dashoffset: 6000;
 
-	-webkit-animation-name: animate-mavi;
-	-webkit-animation-duration: 4.5s;
-	-webkit-animation-delay: calc(11.8s - var(--time-chrome));
-	-webkit-animation-timing-function: ease-out;
-	-webkit-animation-fill-mode: forwards;
+    -webkit-animation-name: animate-mavi;
+    -webkit-animation-duration: 4.5s;
+    -webkit-animation-delay: calc(11.8s - var(--time-chrome));
+    -webkit-animation-timing-function: ease-out;
+    -webkit-animation-fill-mode: forwards;
 
-	animation-name: animate-mavi;
-	animation-duration: 4.5s;
-	animation-delay: calc(11.8s - var(--time-chrome));
-	animation-timing-function: ease-out;
-	animation-fill-mode: forwards;
+    animation-name: animate-mavi;
+    animation-duration: 4.5s;
+    animation-delay: calc(11.8s - var(--time-chrome));
+    animation-timing-function: ease-out;
+    animation-fill-mode: forwards;
 }
 
 #mavi_white {
@@ -508,6 +509,13 @@ a.active {
 	z-index: -1;
 }
 
+.imgPortada, .div_nombre_mavi, #mis_quinces {
+    /* Esto obliga a Safari a mantener el elemento en la GPU */
+    -webkit-perspective: 1000;
+    -webkit-backface-visibility: hidden;
+    -webkit-transform-style: preserve-3d;
+}
+
 @media (min-width: 700px) {
 	.nav_a:hover {
 		-webkit-animation: fillColour 0.7s forwards ease-in-out;
@@ -569,17 +577,15 @@ a.active {
 	to { opacity: 1; }
 }
 
-
-@keyframes animate-mavi {
-	to {
-		stroke-dashoffset: 0;
-	}
+@-webkit-keyframes animate-mavi {
+    from { stroke-dashoffset: 6000; }
+    to { stroke-dashoffset: 0; }
 }
 
 @keyframes animate-mavi {
-	to { stroke-dashoffset: 0; }
+    from { stroke-dashoffset: 6000; }
+    to { stroke-dashoffset: 0; }
 }
-
 @keyframes fill {
 	0% {
 		width: 0%;

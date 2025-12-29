@@ -2,13 +2,13 @@
 
 // document.getElementById("firstAnimation").remove();
 // document.documentElement.style.setProperty("--time-chrome", `9s`);
-if (navigator.userAgent.toLowerCase().indexOf("chrome") > -1) {
-	// alert("El navegador que se está utilizando es Chrome");
-	document.documentElement.style.setProperty("--time-chrome", `0s`);
+const isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
+if (isChrome) {
+	document.documentElement.style.setProperty("--time-chrome", "0s");
 } else {
-	// alert("El navegador que se está utilizando NO es Chrome");
-	document.getElementById("firstAnimation").remove();
-	document.documentElement.style.setProperty("--time-chrome", `9s`);
+	// Para Safari y otros, no eliminamos la animación, solo ajustamos el tiempo
+	document.documentElement.style.setProperty("--time-chrome", "0s");
+	// Si realmente quieres eliminarla en Safari, asegúrate de que no rompa el flujo visual
 }
 
 // Formato recomendado: Año, Mes (empezando desde 0), Día, Hora, Minuto, Segundo
@@ -16,30 +16,30 @@ if (navigator.userAgent.toLowerCase().indexOf("chrome") > -1) {
 var countDownDate = new Date(2026, 0, 24, 20, 0, 0).getTime();
 
 var x = setInterval(function () {
-    var now = new Date().getTime();
-    var distance = countDownDate - now;
+	var now = new Date().getTime();
+	var distance = countDownDate - now;
 
-    // Cálculos de tiempo
-    var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-    var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-    var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+	// Cálculos de tiempo
+	var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+	var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+	var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+	var seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-    // Renderizar en el elemento
-    var reloj = document.getElementById("reloj");
-    if (reloj) {
-        reloj.innerHTML = days + " días " + hours + "hs " + minutes + "m " + seconds + "s ";
-    }
+	// Renderizar en el elemento
+	var reloj = document.getElementById("reloj");
+	if (reloj) {
+		reloj.innerHTML = days + " días " + hours + "hs " + minutes + "m " + seconds + "s ";
+	}
 
-    // Al terminar la cuenta
-    if (distance < 0) {
-        clearInterval(x);
-        if (reloj) {
-            reloj.innerHTML = "¡LLEGÓ EL GRAN DÍA!";
-            // Usando jQuery como en tu ejemplo original
-            $(reloj).prev("p").html("Listo...");
-        }
-    }
+	// Al terminar la cuenta
+	if (distance < 0) {
+		clearInterval(x);
+		if (reloj) {
+			reloj.innerHTML = "¡LLEGÓ EL GRAN DÍA!";
+			// Usando jQuery como en tu ejemplo original
+			$(reloj).prev("p").html("Listo...");
+		}
+	}
 }, 1000);
 ////  Variable --vh y --vw
 
@@ -53,6 +53,16 @@ document.documentElement.style.setProperty(
 	`${window.innerWidth * 0.01}`
 );
 
+const updateViewport = () => {
+    let vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty("--vh", `${vh}px`);
+    document.documentElement.style.setProperty("--vw", `${window.innerWidth * 0.01}`);
+};
+
+window.addEventListener('resize', updateViewport);
+window.addEventListener('orientationchange', updateViewport);
+updateViewport();
+
 ////  Confetti
 function confetti() {
 	$.each($(".confetti"), function () {
@@ -60,18 +70,18 @@ function confetti() {
 		for (var i = 0; i <= confetticount; i++) {
 			$(this).append(
 				'<span class="particle c' +
-					$.rnd(1, 2, 0) +
-					'" style="top:' +
-					$.rnd(10, 40, 0) +
-					"%; left:" +
-					$.rnd(0, 100, 0) +
-					"%;width: calc(" +
-					$.rnd(0.025, 0.875, 3) +
-					"vw + 8px) ; height: calc(" +
-					$.rnd(0.012, 0.437, 3) +
-					"vw + 5px);animation-delay: " +
-					$.rnd(25, 45, 0) / 10 +
-					's;"></span>'
+				$.rnd(1, 2, 0) +
+				'" style="top:' +
+				$.rnd(10, 40, 0) +
+				"%; left:" +
+				$.rnd(0, 100, 0) +
+				"%;width: calc(" +
+				$.rnd(0.025, 0.875, 3) +
+				"vw + 8px) ; height: calc(" +
+				$.rnd(0.012, 0.437, 3) +
+				"vw + 5px);animation-delay: " +
+				$.rnd(25, 45, 0) / 10 +
+				's;"></span>'
 			);
 		}
 	});
@@ -96,33 +106,23 @@ var $mis_quince_gray = $("#mis_quince_gray");
 var $marco_gold = $("#marco_gold");
 
 window.onscroll = function () {
-	let letter_num2 = windowHeight * 1.08 - $(".letter_content").offset().top;
-	let letter_num = 0;
+    const letterContent = document.querySelector(".letter_content");
+    if (!letterContent) return;
 
-	if (letter_num2 > 0) {
-		letter_num = letter_num2 / (windowHeight * 0.38);
-	}
+    // Obtener posición relativa al viewport
+    let rect = letterContent.getBoundingClientRect();
+    let letter_num2 = (windowHeight * 1.08) - rect.top;
+    
+    let letter_num = 0;
+    if (letter_num2 > 0) {
+        letter_num = Math.min(letter_num2 / (windowHeight * 0.38), 1);
+    }
 
-	// console.log(
-	// 	"Letter: " + windowHeight * 1.08,
-	// 	$(".letter_content").offset().top,
-	// 	windowHeight * 0.38,
-	// 	letter_num
-	// );
-
-	// console.log("Letter: " + letter_num);
-	if (window.scrollY < 300) {
-		$mavi_gold.css("opacity", 1 - letter_num);
-
-		$mis_quince_gold.css("opacity", letter_num);
-
-		$mis_quince_gray.css("opacity", 1 - letter_num);
-
-		$marco_gold.css("opacity", 1 - letter_num);
-
-		//Unidad del svg
-		// document.getElementById("marco_gold").setAttribute("y", letter_num2 - 58);
-	}
+    // Aplicar opacidades con prefijo para asegurar suavidad
+    $mavi_gold.css({ "opacity": 1 - letter_num, "webkit-opacity": 1 - letter_num });
+    $mis_quince_gold.css({ "opacity": letter_num, "webkit-opacity": letter_num });
+    $mis_quince_gray.css({ "opacity": 1 - letter_num, "webkit-opacity": 1 - letter_num });
+    $marco_gold.css({ "opacity": 1 - letter_num, "webkit-opacity": 1 - letter_num });
 };
 
 ////  Horizontal Scroll
@@ -148,7 +148,14 @@ $(function () {
 	}
 
 	function bind() {
-		$body.bind("mousewheel", mouseEvent);
+		// $body.bind("mousewheel", mouseEvent); <-- Viejo
+		$body.on("wheel", mouseWheelHandler); // <-- Nuevo estándar
+	}
+
+	function mouseWheelHandler(e) {
+		const delta = e.originalEvent.deltaY;
+		showSlide(delta > 0 ? 1 : -1);
+		e.preventDefault();
 	}
 
 	function mouseEvent(e, delta) {
