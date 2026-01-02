@@ -371,10 +371,25 @@ section {
 	line-height: 1.4;
 }
 
+.fade-in-text {
+font-family: "Palatino Linotype", "Palatino", "URW Palladio L", "Book Antiqua", serif;
+  font-size: min(65px, 9vw);
+  text-align: center;
+  opacity: 0;
+  animation: fadeIn 3s ease-in-out 11s forwards;
+  color: rgb(255, 255, 255);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); } /* Añade un leve movimiento hacia arriba */
+  to { opacity: 1; transform: translateY(0); }
+}
+
+
 header {
 	width: 90%;
 
-	font-size: min(55px, 8vw);
+	font-size: min(50px, 8vw);
 	font-family: "Brush Script MT", "Lucida Handwriting", cursive;
 	font-weight: 400;
 	color: rgb(168, 151, 0);
