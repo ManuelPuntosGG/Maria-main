@@ -376,7 +376,7 @@ font-family: "Palatino Linotype", "Palatino", "URW Palladio L", "Book Antiqua", 
   font-size: min(65px, 9vw);
   text-align: center;
   opacity: 0;
-  animation: fadeIn 3s ease-in-out 11s forwards;
+  animation: fadeIn 3s ease-in-out 10s forwards;
   color: rgb(255, 255, 255);
 }
 
